@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "require": {
         "orlandolibardi/admincms": "dev-master",
-        "orlandolibardi/filecms" : "dev-master"
+        "orlandolibardi/filescms" : "dev-master"
     },
     "autoload": {
         "psr-4": {
