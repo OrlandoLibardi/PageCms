@@ -1,6 +1,6 @@
 <?php
 
-namespace OrlandoLibardi\PageCms\app\Http\Controllers\Admin;
+namespace OrlandoLibardi\PageCms\app\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

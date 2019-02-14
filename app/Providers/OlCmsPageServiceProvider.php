@@ -26,7 +26,7 @@ class OlCmsPageServiceProvider extends ServiceProvider
         //publicar os arquivos
         $this->publishes([
             __DIR__.'/../../resources/views/admin/' => resource_path('views/admin/'),
-            __DIR__.'/../../resources/views/website/' => resource_path('views/webiste/'),            
+            __DIR__.'/../../resources/views/website/' => resource_path('views/website/'),            
             __DIR__.'/../../database/migrations/' => database_path('migrations'),
             __DIR__.'/../../database/seeds/' => database_path('seeds'),
             __DIR__.'/../../config/pages.php' => config_path('pages.php'),
