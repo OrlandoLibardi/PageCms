@@ -11,7 +11,7 @@
         </ol>
     </div>
     <div class="col-md-3 padding-btn-header text-right">
-        @can('criar')
+        @can('create')
         <a href="javascript:;" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-pages">Nova Página</a>
         @else
         <a href="javascript:;" class="btn btn-success btn-sm disabled alert-action">Nova Página</a>

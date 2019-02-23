@@ -1,4 +1,4 @@
-@can('editar')
+@can('edit')
     @if($status==1)
         <a href="javascript:;" class="btn btn-primary btn-sm btn-status" title="Colocar Offline?" data-id="{{ $id }}" data-status="1"><i class="fa fa-refresh" aria-hidden="true"></i>
         </a>
