@@ -25,7 +25,7 @@ class PageTableSeeder extends Seeder
 
         Admin::create([
             'name' => 'Páginas',
-            'route' => 'files',
+            'route' => 'pages',
             'icon' => 'fa fa-file-text-o',
             'parent_id' => 0,
             'minimun_can' => 'list',
