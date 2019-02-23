@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use OrlandoLibardi\PageCms\app\Page;
+use OrlandoLibardi\OlCms\AdminCms\app\Admin;
 
 class PageTableSeeder extends Seeder
 {
@@ -11,8 +12,7 @@ class PageTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        
+    {        
         Page::create([
             'name' => 'Home', 
             'alias' => 'home', 
@@ -22,5 +22,15 @@ class PageTableSeeder extends Seeder
             'meta_description' => 'Página de demonstração', 
             'meta_image' => ''
         ]);
+
+        Admin::create([
+            'name' => 'Páginas',
+            'route' => 'files',
+            'icon' => 'fa fa-file-text-o',
+            'parent_id' => 0,
+            'minimun_can' => 'list',
+            'order_at' => 2
+        ]);
+
     }
 }

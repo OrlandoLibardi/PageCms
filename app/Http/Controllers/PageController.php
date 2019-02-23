@@ -39,7 +39,7 @@ class PageController extends Controller
         //alterar isso
         $files = array_pluck($this->getTemplates(), 'file', 'file');
         $data  = Page::orderBy('name','ASC')->paginate(10);
-        return view('viewPage::index', compact('files', 'data'));
+        return view('admin.pages.index', compact('files', 'data'));
     }
     /**
     * Show the form for creating a new resource.
@@ -48,7 +48,7 @@ class PageController extends Controller
     */
     public function create(Request $request) {
         $file_route = $request->file_route;
-        return view('viewPage::create', compact('file_route') );
+        return view('admin.pages.create', compact('file_route') );
     }
     /**
     * Store a newly created resource in storage.
@@ -139,7 +139,7 @@ class PageController extends Controller
         //montar o arquivo editavel e criar a rota
         $file_route = $this->prepareFile( $file );
         //retornar a rota
-        return view('viewPage::edit', compact('page', 'file_route') );
+        return view('admin.pages.edit', compact('page', 'file_route') );
     }
 
     /**

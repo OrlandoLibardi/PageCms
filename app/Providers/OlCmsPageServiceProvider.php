@@ -22,7 +22,7 @@ class OlCmsPageServiceProvider extends ServiceProvider
 
 
         //registrar as views
-        $this->loadViewsFrom( __DIR__.'/../../resources/views/pages/', 'viewPage');
+        //$this->loadViewsFrom( __DIR__.'/../../resources/views/pages/', 'viewPage');
         //publicar os arquivos
         $this->publishes([
             __DIR__.'/../../resources/views/admin/' => resource_path('views/admin/'),
