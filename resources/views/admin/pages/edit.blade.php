@@ -25,7 +25,7 @@
     <div class="col-md-9">
         <div class="ibox float-e-margins">
             <div class="ibox-content" style="height: 700px">
-                <iframe id="iframe" name="iframe" frameborder="0" scrolling="auto" src="{{ Route('template', ['t' => $file_route ]) }}" style="width: 100%; height: 100%;"></iframe>
+                <iframe id="iframe" name="iframe" frameborder="0" scrolling="auto" src="{{ Route('page-template', ['template' => $file_route ]) }}" style="width: 100%; height: 100%;"></iframe>
             </div>
         </div>
     </div>
@@ -41,13 +41,16 @@
             <div class="ibox-content">
                 <div class="row">
                     {!! Form::open(['route' => ['pages.update', 'id' => $page->id], 'method'=>'PUT', 'id'=>'form-page', 'name' => 'form-page']) !!}
-                    {!! Form::hidden('template', $file_route) !!}
+                    
+                    
+                    {!! Form::hidden('content', $file_route) !!}
                     {!! Form::hidden('contents', null) !!}
                     {!! Form::hidden('alias', $page->alias) !!}
+
                     <div class="col-md-12">
                         <div class="form-group">
                             <label><span class="text-red">*</span> Título da página</label>
-                            {!! Form::text('titulo', $page->name, ['placeholder' => 'Título da página...','class' => 'form-control']) !!}
+                            {!! Form::text('name', $page->name, ['placeholder' => 'Título da página...','class' => 'form-control']) !!}
                         </div>
                     </div>
                     <div class="col-md-12">

@@ -4,6 +4,8 @@ namespace OrlandoLibardi\PageCms\app\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use OrlandoLibardi\PageCms\app\Page;
+use OrlandoLibardi\PageCms\app\Http\Obervers\PageObserver;
 
 class OlCmsPageServiceProvider extends ServiceProvider
 {
@@ -20,9 +22,9 @@ class OlCmsPageServiceProvider extends ServiceProvider
         ->prefix('admin')
         ->group(__DIR__. '/../../routes/web.php');
 
+        //Novas rotas dinâmicas
+        $this->loadRoutesFrom(__DIR__. '/../../routes/web-dynamic.php');
 
-        //registrar as views
-        //$this->loadViewsFrom( __DIR__.'/../../resources/views/pages/', 'viewPage');
         //publicar os arquivos
         $this->publishes([
             __DIR__.'/../../resources/views/admin/' => resource_path('views/admin/'),
@@ -32,7 +34,7 @@ class OlCmsPageServiceProvider extends ServiceProvider
             __DIR__.'/../../config/pages.php' => config_path('pages.php'),
         ],'adminPage');
 
-        
+        Page::observe(PageObserver::class);
         
     }
 
