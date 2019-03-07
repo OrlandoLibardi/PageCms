@@ -55,7 +55,12 @@ class PageController extends Controller
         ServicePage::destroyElementsTemplate($request->content, $request->contents, $request->name);
         $page = Page::create( $request->all() );
         $edit_route = route('pages.edit', [ 'id' => $page->id ]);
-        return response()->json(array( 'message' => 'Criado com sucesso.', 'status'  =>  'success', 'data' => ['edit_route' => $edit_route] ), 201);  
+        return response()
+               ->json(array( 'message' => __('olcms::messages.create_success'), 
+                             'status'  =>  'success', 
+                             'data' => [
+                                 'edit_route' => $edit_route
+                            ] ), 200);  
     }
     /**
     * Display the specified resource.
@@ -98,7 +103,12 @@ class PageController extends Controller
                 $request->all() 
             );        
         $edit_route = route('pages.edit', [ 'id' => $id ]);  
-        return response()->json(array( 'message' => 'Editado com sucesso.', 'status'  =>  'success', 'data' => ['edit_route' => $edit_route] ), 201);
+        return response()
+                ->json(array( 'message' => __('olcms::messages.update_success'), 
+                              'status'  =>  'success', 
+                              'data' => [
+                                  'edit_route' => $edit_route
+                               ] ), 201);
     }
     
     /**
@@ -110,7 +120,10 @@ class PageController extends Controller
     public function destroy(PageDeleteRequest $request) 
     {
         ServicePage::deletePage($request->input('id')); 
-        return response()->json(array( 'message' => 'Removidos com sucesso!', 'status'  =>  'success'), 201);
+        return response()
+                ->json(array( 'message' => __('olcms::messages.destroy_success'), 
+                              'status'  =>  'success'
+                    ), 200);
     }  
     /**
     * Atauliza o status de exibição da página
@@ -120,7 +133,10 @@ class PageController extends Controller
     public function status(PageStatusRequest $request)
     {
         ServicePage::updateStatus($request->id, $request->status);
-        return response()->json(array( 'message' => 'Alterado com sucesso!', 'status'  =>  'success'), 201);
+        return response()
+                ->json(array( 'message' =>  __('olcms::messages.update_success'), 
+                              'status'  =>  'success'
+                            ), 201);
     }
     /**
     * Display the specified resource.
@@ -142,7 +158,7 @@ class PageController extends Controller
     {
         $file_route = ServicePage::prepareFile( $request->template );
         return response()->json(
-                array('message' => 'Arquivo criado com sucesso!',
+                array('message' => __('olcms::messages.create_success'),
                       'status' => 'success',
                       'data' => ['url' => $file_route]
                   ), 201 );
