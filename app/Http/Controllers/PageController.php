@@ -56,7 +56,7 @@ class PageController extends Controller
         $page = Page::create( $request->all() );
         $edit_route = route('pages.edit', [ 'id' => $page->id ]);
         return response()
-               ->json(array( 'message' => __('olcms::messages.create_success'), 
+               ->json(array( 'message' => __('messages.create_success'), 
                              'status'  =>  'success', 
                              'data' => [
                                  'edit_route' => $edit_route
@@ -104,7 +104,7 @@ class PageController extends Controller
             );        
         $edit_route = route('pages.edit', [ 'id' => $id ]);  
         return response()
-                ->json(array( 'message' => __('olcms::messages.update_success'), 
+                ->json(array( 'message' => __('messages.update_success'), 
                               'status'  =>  'success', 
                               'data' => [
                                   'edit_route' => $edit_route
@@ -121,7 +121,7 @@ class PageController extends Controller
     {
         ServicePage::deletePage($request->input('id')); 
         return response()
-                ->json(array( 'message' => __('olcms::messages.destroy_success'), 
+                ->json(array( 'message' => __('messages.destroy_success'), 
                               'status'  =>  'success'
                     ), 200);
     }  
@@ -134,7 +134,7 @@ class PageController extends Controller
     {
         ServicePage::updateStatus($request->id, $request->status);
         return response()
-                ->json(array( 'message' =>  __('olcms::messages.update_success'), 
+                ->json(array( 'message' =>  __('messages.update_success'), 
                               'status'  =>  'success'
                             ), 201);
     }
@@ -158,7 +158,7 @@ class PageController extends Controller
     {
         $file_route = ServicePage::prepareFile( $request->template );
         return response()->json(
-                array('message' => __('olcms::messages.create_success'),
+                array('message' => __('messages.create_success'),
                       'status' => 'success',
                       'data' => ['url' => $file_route]
                   ), 201 );
