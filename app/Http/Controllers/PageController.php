@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use OrlandoLibardi\PageCms\app\Page;
 use OrlandoLibardi\PageCms\app\ServicePage;
+use OrlandoLibardi\PageCms\app\ServicePicture;
 use OrlandoLibardi\PageCms\app\Http\Requests\PageRequest;
 use OrlandoLibardi\PageCms\app\Http\Requests\PageStatusRequest;
 use OrlandoLibardi\PageCms\app\Http\Requests\PageDeleteRequest;
@@ -43,6 +44,8 @@ class PageController extends Controller
     {
         $file_route = $request->file_route;
         return view('admin.pages.create', compact('file_route') );
+
+
     }
     /**
     * Store a newly created resource in storage.
@@ -52,7 +55,7 @@ class PageController extends Controller
     */
     public function store(PageRequest $request) 
     {
-        ServicePage::destroyElementsTemplate($request->content, $request->contents, $request->name);
+        ServicePage::destroyElementsTemplate($request->content, $request->contents, $request->name);        
         $page = Page::create( $request->all() );
         $edit_route = route('pages.edit', [ 'id' => $page->id ]);
         return response()
@@ -72,7 +75,7 @@ class PageController extends Controller
     {
         $page = Page::find($id);
         $view = "website." . $page->alias;
-        return view($view);
+        return view($view, compact($page));
     }
     
     /**
@@ -162,6 +165,20 @@ class PageController extends Controller
                       'status' => 'success',
                       'data' => ['url' => $file_route]
                   ), 201 );
-    }   
+    } 
+    /*
+        Cria os padrões de imagens para elementos do tipo picture 
+    */
+
+    public function createPicture(Request $request)
+    {
+        $ServicePicture = new ServicePicture();
+        $dados = $ServicePicture->createPicture($request->img);
+        return response()->json(
+            array('message' => __('messages.create_success'),
+                  'status' => 'success',
+                  'data' => $dados
+              ), 201 );
+    }
     
 }

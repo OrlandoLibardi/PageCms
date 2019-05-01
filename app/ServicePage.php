@@ -96,43 +96,67 @@ class ServicePage
         $patterns[5] = '/<(h5\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h5>/i';
         $patterns[6] = '/<(h6\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h6>/i';
         $patterns[7] = '/<(img(.+?)data-edit="true")((.+?)*?)>/i';
+        $patterns[8] = '/<(picture\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/picture>/i';
+        
         //valores a serem substituídos
-        $replacements[0] = '<span data-editable="true" data-type="content" data-id="0"><div $2 $3>$5</div></span>';
-        $replacements[1] = '<span data-editable="true" data-type="title" data-id="0"><h1 $2 $4>$6</h1></span>';
-        $replacements[2] = '<span data-editable="true" data-type="title" data-id="0"><h2 $2 $4>$6</h2></span>';
-        $replacements[3] = '<span data-editable="true" data-type="title" data-id="0"><h3 $2 $4>$6</h3></span>';
-        $replacements[4] = '<span data-editable="true" data-type="title" data-id="0"><h4 $2 $4>$6</h4></span>';
-        $replacements[5] = '<span data-editable="true" data-type="title" data-id="0"><h5 $2 $4>$6</h5></span>';
-        $replacements[6] = '<span data-editable="true" data-type="title" data-id="0"><h6 $2 $4>$6</h6></span>';
-        $replacements[7] = '<span data-editable="true" data-type="image" data-id="0"><img $2 $3 /></span>';
+        $replacements[0] = '<span class="object-editable" data-editable="true" data-type="content" data-id="0"><div data-edit="true" $2 $3>$5</div></span>';
+        $replacements[1] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h1 data-edit="true" $2 $4>$6</h1></span>';
+        $replacements[2] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h2 data-edit="true" $2 $4>$6</h2></span>';
+        $replacements[3] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h3 data-edit="true" $2 $4>$6</h3></span>';
+        $replacements[4] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h4 data-edit="true" $2 $4>$6</h4></span>';
+        $replacements[5] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h5 data-edit="true" $2 $4>$6</h5></span>';
+        $replacements[6] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h6 data-edit="true" $2 $4>$6</h6></span>';
+        $replacements[7] = '<span class="object-editable" data-editable="true" data-type="image" data-id="0"><img data-edit="true" $2 $3 /></span>';
+        $replacements[8] = '<span class="object-editable" data-editable="true" data-type="picture" data-id="0"><picture data-edit="true" $2> $6 </picture></span>';
+        
         //substituição dos valores
         $dados = preg_replace($patterns, $replacements, $open, '-1', $count);
-        //gerando identificadores para os blocos no template
-        for($i=1; $i <= $count; $i++){
-            $dados = preg_replace('/data-id="0"/', 'data-id="'.$i.'"', $dados, 1);
-        }
+        
+        
         //aplicavel somente para links com imagens
         $dados = preg_replace_callback(
                 '/<(a\s((.+?)?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/a>/i',
                 function($m) use ($count){
-                    if(substr_count($m[6], '<img') > 0 ){
-                        $obj = '<span data-editable="true" data-type="image" data-id="'.($count+1).'">';
-                        $obj .= '<a '.$m[3].' '.$m[4].' />';
+                    if(substr_count($m[6], '<picture') > 0 ){
+                        $obj = '<span class="object-editable" data-editable="true" data-type="picture" data-id="0">';
+                        $obj .= '<a '.$m[3].' '.$m[4].' >';
+                        $obj .= $m[6];
+                        $obj .= '</a>';
+                        $obj .= '</span>';
+                        return $obj;
+                    }
+                    else if(substr_count($m[6], '<img') > 0 ){
+                        $obj = '<span class="object-editable"  data-editable="true" data-type="image" data-id="0">';
+                        $obj .= '<a '.$m[3].' '.$m[4].' >';
                         $obj .= $m[6];
                         $obj .= '</a>';
                         $obj .= '</span>';
                         return $obj;
                     }
                 }, $dados);
+        //gerando identificadores para os blocos no template
+        
+        for($i=1; $i <= $count; $i++){
+            $dados = preg_replace('/data-id="0"/', 'data-id="'.$i.'"', $dados, 1);
+        }      
         //adicionando a dependencia javascript ao modelo editável
-        $javascript = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.js').'"></script></body>';
+        $javascript = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.v2.js').'"></script></body>';
         $dados      = str_replace("</body>", $javascript, $dados);
+        
+        $css        = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/css/plugins/OLForm/OLTemplates.css').'"></head>';
+        
+        $dados      = str_replace("</head>", $css, $dados);
+
+        
+  
         //salvar o modelo na pasta temporaria
         File::put(self::getPagePathTemp() . $new_file_name . self::getPageExtension(), $dados);
+        
         //retornar o nome temporario do arquivo
         return $new_file_name;
 
     }
+
     /**
     * Confirma se o arquivo existe caso existir gera o arquivo editavel e responde
     *
@@ -164,20 +188,23 @@ class ServicePage
         $newString = preg_replace_callback('/<(span\s(.+?)data-id="([0-9])")((.+?)*?)>((.|\n)*?)<\/span>/i',
             function ($matches) use ($ids, $contents){
                 if(!in_array($matches[3], $ids)){
-                    return preg_replace('/<(span\s(.+?)data-id="'.$matches[3].'")((.+?)*?)>((.|\n)*?)<\/span>/', '', $matches[0], 1);
+                    return preg_replace('/<(span\s(.+?)data-id="'.$matches[3].'")((.+?)*?)>((.|\n)*?)<\/span>/', '', $matches[0], 1);                    
                 }else{
-                    return str_replace($matches[1], $contents[$matches[3]],  $matches[1]);
+                   // return str_replace($matches[1], $contents[$matches[3]],  $matches[1]);
+                   return str_replace($matches[1], $contents[$matches[3]],  $matches[1]);
                 }
-            }, $open );  
+            }, $open );
+            
         //remove a dependência javascript do template
-        $javascript = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.js').'"></script>';
+        $javascript = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.v2.js').'"></script>';
+        $css        = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/css/plugins/OLForm/OLTemplates.css').'">';
+        $newString  = str_replace($css, "", $newString);
         $newString  = str_replace($javascript, "", $newString);
         //salva o novo arquivo na pasta final
         File::put(self::getPagePath() . $alias . self::getPageExtension(), $newString);   
         //remover o arquivo da pasta temporaria
         File::delete(self::getPagePathTemp() . $file . self::getPageExtension());
         return true;
-
     }
     /**
      * Verifica se existe um registro com mesmo slug caso sim adiciona um indice ao final e verifica de novo
