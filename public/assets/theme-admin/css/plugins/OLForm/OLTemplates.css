@@ -1,0 +1,28 @@
+.ol-btn-group {
+ position: absolute; float: left; width: 100px; height: auto; padding: 1px; background: #FFF; border: 1px solid #e7eaec;
+}
+
+.ol-btn{
+	display: inline-block;
+	padding: 5px 10px; 
+	margin-bottom: 0;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.ol-btn-edit{
+	background-color: #f8ac59;
+	border-color: #f8ac59;
+	color: #FFFFFF;
+}
+.ol-btn-delete{
+	background-color: #ec4758; border-color: #ec4758; color: #FFFFFF;
+}
