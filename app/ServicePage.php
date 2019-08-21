@@ -53,7 +53,7 @@ class ServicePage
      * @return string
      */
     public static function modelRoute( $alias ){
-        return 'Route::get("' . $alias . '/{extra?}", function($extra=null){ return view("website.'.$alias.'", compact("extra")); })->where("extra", "([A-Za-z0-9\-\/]+)")->middleware("web");';
+        return 'Route::get("' . $alias . '/{extra?}", function(){ return view("website.'.$alias.'"); })->where("extra", "([A-Za-z0-9\-\/]+)")->middleware("web");';
     } 
 
     /**
