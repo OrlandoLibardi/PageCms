@@ -3,7 +3,6 @@
 namespace OrlandoLibardi\PageCms\app;
 use File;
 use OrlandoLibardi\PageCms\app\Page;
-use Log;
 
 class ServicePage
 {   
@@ -54,15 +53,7 @@ class ServicePage
      * @return string
      */
     public static function modelRoute( $alias ){
-        
-        //return 'Route::get("' . $alias . '/{extra?}", function($extra=null){ return view("website.'.$alias.'", compact("extra")); })->where("extra", "([A-Za-z0-9\-\/]+)")->middleware("web");';
-
-        $route_  = 'Route::get("' . $alias . '/{extra?}", "OrlandoLibardi\PageCms\app\Http\Controllers\PageShowController@show")' . "\n";
-        $route_ .= '->where("extra", "([A-Za-z0-9\-\/]+)")' . "\n";
-        $route_ .= '->middleware("web");' . "\n";
-
-        return $route_;
-
+        return 'Route::get("' . $alias . '/{extra?}", function($extra=null){ return view("website.'.$alias.'", compact("extra")); })->where("extra", "([A-Za-z0-9\-\/]+)")->middleware("web");';
     } 
 
     /**
@@ -88,7 +79,6 @@ class ServicePage
      */
     public static function prepareFile( $file )
     {
-        Log::info('prepareFile ' . $file);
         $original_file     = $file;
         $new_file_name     = sha1(time());
         //ler o arquivo original
@@ -121,9 +111,7 @@ class ServicePage
         
         //substituição dos valores
         $dados = preg_replace($patterns, $replacements, $open, '-1', $count);
-        Log::info('prepareFile 2' . $file);
-        File::put(self::getPagePathTemp() . 'um-open-' . self::getPageExtension(), $open);
-        File::put(self::getPagePathTemp() . 'um-teste-' . self::getPageExtension(), $dados);
+        
         
         //aplicavel somente para links com imagens
         $dados = preg_replace_callback(
@@ -159,7 +147,7 @@ class ServicePage
         
         $dados      = str_replace("</head>", $css, $dados);
 
-        Log::info('prepareFile ' . $file);
+        
   
         //salvar o modelo na pasta temporaria
         File::put(self::getPagePathTemp() . $new_file_name . self::getPageExtension(), $dados);
@@ -241,9 +229,7 @@ class ServicePage
      {        
         $return = [];
         foreach ($contents as $value) {
-            if(array_key_exists('content', $value)){
-                $return[$value->id] = $value->content;
-            }           
+            $return[$value->id] = $value->content;
         }
         return  $return;
      } 
