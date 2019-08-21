@@ -149,7 +149,9 @@ class PageController extends Controller
     */
     public function showTemplate($template) 
     {
-        return view('website.temp.'.$template);
+        $page  = Page::first();
+        $extra = false;
+        return view('website.temp.'.$template, compact('page', 'extra'));
     }  
    /**
     * Confirma se o arquivo existe caso existir gera o arquivo editavel e responde com uma rota para visualização
