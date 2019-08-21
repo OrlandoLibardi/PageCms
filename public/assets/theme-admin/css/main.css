@@ -1,0 +1,5 @@
+a.btn.disabled,
+fieldset[disabled] a.btn{
+    cursor: no-drop !important;
+    pointer-events: auto !important;
+}
