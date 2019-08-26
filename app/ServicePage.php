@@ -2,6 +2,7 @@
 
 namespace OrlandoLibardi\PageCms\app;
 use File;
+use Log;
 use OrlandoLibardi\PageCms\app\Page;
 
 class ServicePage
@@ -58,7 +59,6 @@ class ServicePage
         $route_ .= '->where("extra", "([A-Za-z0-9\-\/]+)")' . "\n";
         $route_ .= '->middleware("web");' . "\n";
         return $route_;
-        //return 'Route::get("' . $alias . '/{extra?}", function($extra=null){ return view("website.'.$alias.'", compact("extra")); })->where("extra", "([A-Za-z0-9\-\/]+)")->middleware("web");';
     } 
 
     /**
@@ -86,80 +86,26 @@ class ServicePage
     {
         $original_file     = $file;
         $new_file_name     = sha1(time());
-        //ler o arquivo original
+        //lê o arquivo original e armazenar em $open
         $open  = File::get(self::getPagePath() . $original_file . self::getPageExtension());
-        $dados = [];
-        $patterns = [];
-        $replacements = [];
-        $count = 0;
-        //valores a serem enontrados
-        $patterns[0] = '/<(div(.+?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/div>/i';
-        $patterns[1] = '/<(h1\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h1>/i';
-        $patterns[2] = '/<(h2\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h2>/i';
-        $patterns[3] = '/<(h3\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h3>/i';
-        $patterns[4] = '/<(h4\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h4>/i';
-        $patterns[5] = '/<(h5\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h5>/i';
-        $patterns[6] = '/<(h6\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/h6>/i';
-        $patterns[7] = '/<(img(.+?)data-edit="true")((.+?)*?)>/i';
-        $patterns[8] = '/<(picture\s((.|\n)*?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/picture>/i';
-        
-        //valores a serem substituídos
-        $replacements[0] = '<span class="object-editable" data-editable="true" data-type="content" data-id="0"><div data-edit="true" $2 $3>$5</div></span>';
-        $replacements[1] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h1 data-edit="true" $2 $4>$6</h1></span>';
-        $replacements[2] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h2 data-edit="true" $2 $4>$6</h2></span>';
-        $replacements[3] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h3 data-edit="true" $2 $4>$6</h3></span>';
-        $replacements[4] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h4 data-edit="true" $2 $4>$6</h4></span>';
-        $replacements[5] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h5 data-edit="true" $2 $4>$6</h5></span>';
-        $replacements[6] = '<span class="object-editable" data-editable="true" data-type="title" data-id="0"><h6 data-edit="true" $2 $4>$6</h6></span>';
-        $replacements[7] = '<span class="object-editable" data-editable="true" data-type="image" data-id="0"><img data-edit="true" $2 $3 /></span>';
-        $replacements[8] = '<span class="object-editable" data-editable="true" data-type="picture" data-id="0"><picture data-edit="true" $2> $6 </picture></span>';
-        
-        //substituição dos valores
-        $dados = preg_replace($patterns, $replacements, $open, '-1', $count);
-        
-        
-        //aplicavel somente para links com imagens
-        $dados = preg_replace_callback(
-                '/<(a\s((.+?)?)data-edit="true")((.+?)*?)>((.|\n)*?)<\/a>/i',
-                function($m) use ($count){
-                    if(substr_count($m[6], '<picture') > 0 ){
-                        $obj = '<span class="object-editable" data-editable="true" data-type="picture" data-id="0">';
-                        $obj .= '<a '.$m[3].' '.$m[4].' >';
-                        $obj .= $m[6];
-                        $obj .= '</a>';
-                        $obj .= '</span>';
-                        return $obj;
-                    }
-                    else if(substr_count($m[6], '<img') > 0 ){
-                        $obj = '<span class="object-editable"  data-editable="true" data-type="image" data-id="0">';
-                        $obj .= '<a '.$m[3].' '.$m[4].' >';
-                        $obj .= $m[6];
-                        $obj .= '</a>';
-                        $obj .= '</span>';
-                        return $obj;
-                    }
-                }, $dados);
-        //gerando identificadores para os blocos no template
-        
-        for($i=1; $i <= $count; $i++){
-            $dados = preg_replace('/data-id="0"/', 'data-id="'.$i.'"', $dados, 1);
-        }      
-        //adicionando a dependencia javascript ao modelo editável
-        $javascript = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.v2.js').'"></script></body>';
-        $dados      = str_replace("</body>", $javascript, $dados);
-        
-        $css        = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/css/plugins/OLForm/OLTemplates.css').'"></head>';
-        
-        $dados      = str_replace("</head>", $css, $dados);
-
-        
-  
-        //salvar o modelo na pasta temporaria
+        //alterar a body para adiiconar a classe de loading
+        $body_find    = '/<(body(\s(.|\n)*?)class="(.+?)"((.)*?)>)/i';
+        $body_replace = '<body $2 class="objects_load $4" $5>';
+        $dados = preg_replace($body_find, $body_replace, $open);
+        //Adicionando as dependência javascript ao arquivo
+        $append_footer  = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.v2.js').'"></script>' . "\n";
+        $append_footer .= '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplatesObjects.v2.js').'"></script>' . "\n";
+        $append_footer .= '<script>$(document).ready(function(e){$("body").OLTemplatesObjects();});</script>' . "\n";
+        $append_footer .= '</body>' . "\n";
+        $append_header  = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/css/plugins/OLForm/OLTemplates.css').'">' . "\n";
+        $append_header .= '</head>' . "\n";
+        $dados       = str_replace("</body>", $append_footer, $dados);        
+        $dados       = str_replace("</head>", $append_header, $dados);
+        $dados       = str_replace("<body>", '<body class="objects_load"', $dados);
+        //Salvar o arquivo como um modelo editável na pasta temp
         File::put(self::getPagePathTemp() . $new_file_name . self::getPageExtension(), $dados);
-        
-        //retornar o nome temporario do arquivo
+        //Retornar o nome temporario do arquivo
         return $new_file_name;
-
     }
 
     /**
