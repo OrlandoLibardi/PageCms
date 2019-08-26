@@ -93,11 +93,11 @@ class ServicePage
         $body_replace = '<body $2 class="objects_load $4" $5>';
         $dados = preg_replace($body_find, $body_replace, $open);
         //Adicionando as dependência javascript ao arquivo
-        $append_footer  = '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplates.v2.js').'"></script>' . "\n";
-        $append_footer .= '<script src="'.asset('assets/theme-admin/js/plugins/OLForm/OLTemplatesObjects.v2.js').'"></script>' . "\n";
+        $append_footer  = '<script src="'.asset('assets/theme-admin/js/plugins/OLTemplates/OLTemplates.v2.js').'"></script>' . "\n";
+        $append_footer .= '<script src="'.asset('assets/theme-admin/js/plugins/OLTemplates/OLTemplatesObjects.v2.js').'"></script>' . "\n";
         $append_footer .= '<script>$(document).ready(function(e){$("body").OLTemplatesObjects();});</script>' . "\n";
         $append_footer .= '</body>' . "\n";
-        $append_header  = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/css/plugins/OLForm/OLTemplates.css').'">' . "\n";
+        $append_header  = '<link rel="stylesheet" type="text/css" media="screen" href="'.asset('assets/theme-admin/js/plugins/OLTemplates/OLTemplates.css').'">' . "\n";
         $append_header .= '</head>' . "\n";
         $dados       = str_replace("</body>", $append_footer, $dados);        
         $dados       = str_replace("</head>", $append_header, $dados);
